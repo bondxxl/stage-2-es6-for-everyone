@@ -1,4 +1,5 @@
-import { controls } from '../../constants/controls';
+import {controls} from '../../constants/controls';
+
 // import {showWinnerModal} from "modal/winner";
 
 export async function fight(firstFighter, secondFighter) {
@@ -49,6 +50,19 @@ export async function fight(firstFighter, secondFighter) {
     return [pOneAction, pTwoAction];
   }
 
+  function stage(player1, player2, action1, action2) {
+    if (action1 && action1.includes('Attack')) {
+      if (action2.includes('Block')) {
+        player2.health -= getDamage(player1, player2);
+      } else {
+        player2.health -= getDamage(player1, null);
+      }
+    }
+    else if (action1 && action1.includes('CriticalHitCombination')) {
+      player2.health -= player1.attack * 2;
+    }
+  }
+
   return new Promise((resolve) => {
     // resolve the promise with the winner when fight is over
     const keysPressed = new Set();
@@ -62,7 +76,13 @@ export async function fight(firstFighter, secondFighter) {
         return;
       }
 
-      console.log(getActions(keysPressed, keysPressed2));
+      let actions = getActions(keysPressed, keysPressed2);
+      console.log(actions[0] + actions[1]);
+
+      console.log(firstFighter.health, secondFighter.health);
+      stage(firstFighter, secondFighter, actions[0], actions[1]);
+      stage(secondFighter, firstFighter, actions[1], actions[0]);
+      console.log(firstFighter.health, secondFighter.health);
 
       keysPressed.clear();
       keysPressed2.clear();
@@ -72,24 +92,56 @@ export async function fight(firstFighter, secondFighter) {
 
 export function getDamage(attacker, defender) {
   // return damage
-  let damage = this.getHitPower(attacker) - this.getBlockPower(defender);
+  let damage = getHitPower(attacker) - getBlockPower(defender);
+  console.log('damage: ', damage);
   return damage > 0 ? damage : 0;
 }
 
 export function getHitPower(fighter) {
   // return hit power
-  let criticalHitChance = getRandomIntInclusive(1, 2);
-  return fighter.attack * criticalHitChance;
+  let randomIntInclusive = getRandomFloatInclusive(1, 2);
+  return fighter.attack * randomIntInclusive;
 }
 
 export function getBlockPower(fighter) {
+  if (!fighter) {
+    return 0;
+  }
   // return block power
-  let dodgeChance = getRandomIntInclusive(1, 2);
+  let dodgeChance = getRandomFloatInclusive(1, 2);
   return fighter.defense * dodgeChance;
 }
 
-function getRandomIntInclusive(min, max) {
+/*function getRandomIntInclusive(min, max) {
   min = Math.ceil(min);
   max = Math.floor(max);
   return Math.floor(Math.random() * (max - min + 1) + min); //The maximum is inclusive and the minimum is inclusive
+}*/
+
+// Generates values from <0, 1>
+function randomizeValue() {
+  const value = (1 + 10E-16) * Math.random();
+
+  if (value > 1.0) {
+    return 1.0;
+  }
+
+  return value;
+}
+
+/*
+	inclusive min (result can be equal to min value)
+    inclusive max (result can be equal to min value)
+*/
+function getRandomFloatInclusive(min, max) {
+  if(max == null) {
+    max = (min == null ? Number.MAX_VALUE : min);
+    min = 0.0;
+  }
+
+  if(min >= max) {
+    throw new Error("Incorrect arguments.");
+  }
+
+  return min + (max - min) * randomizeValue();
 }
