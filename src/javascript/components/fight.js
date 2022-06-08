@@ -3,6 +3,8 @@ import { controls } from '../../constants/controls';
 
 export async function fight(firstFighter, secondFighter) {
 
+  console.log(firstFighter, secondFighter);
+
   function isKeyIncludes(key, controls, keysSet) {
     return typeof controls[key] === 'object'
         ? controls[key].every(el => keysSet.has(el))
@@ -74,8 +76,18 @@ export function getDamage(attacker, defender) {
 
 export function getHitPower(fighter) {
   // return hit power
+  let criticalHitChance = getRandomIntInclusive(1, 2);
+  return fighter.attack * criticalHitChance;
 }
 
 export function getBlockPower(fighter) {
   // return block power
+  let dodgeChance = getRandomIntInclusive(1, 2);
+  return fighter.defense * dodgeChance;
+}
+
+function getRandomIntInclusive(min, max) {
+  min = Math.ceil(min);
+  max = Math.floor(max);
+  return Math.floor(Math.random() * (max - min + 1) + min); //The maximum is inclusive and the minimum is inclusive
 }
