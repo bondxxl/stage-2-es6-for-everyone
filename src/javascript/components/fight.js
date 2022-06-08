@@ -1,7 +1,5 @@
 import {controls} from '../../constants/controls';
 
-// import {showWinnerModal} from "modal/winner";
-
 export async function fight(firstFighter, secondFighter) {
 
   console.log(firstFighter, secondFighter);
@@ -52,7 +50,7 @@ export async function fight(firstFighter, secondFighter) {
 
   function stage(player1, player2, action1, action2) {
     if (action1 && action1.includes('Attack')) {
-      if (action2.includes('Block')) {
+      if (action2 && action2.includes('Block')) {
         player2.health -= getDamage(player1, player2);
       } else {
         player2.health -= getDamage(player1, null);
@@ -83,9 +81,14 @@ export async function fight(firstFighter, secondFighter) {
       stage(firstFighter, secondFighter, actions[0], actions[1]);
       stage(secondFighter, firstFighter, actions[1], actions[0]);
       console.log(firstFighter.health, secondFighter.health);
-
       keysPressed.clear();
       keysPressed2.clear();
+
+      if (firstFighter.health <= 0 || secondFighter.health <= 0) {
+
+        // showWinnerModal(firstFighter.health > secondFighter.health ? firstFighter : secondFighter);
+        resolve(firstFighter.health > secondFighter.health ? firstFighter : secondFighter);
+      }
     });
   });
 }
