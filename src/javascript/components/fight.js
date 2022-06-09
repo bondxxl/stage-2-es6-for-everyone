@@ -48,6 +48,11 @@ export async function fight(firstFighter, secondFighter) {
     return [pOneAction, pTwoAction];
   }
 
+  let isNoLocked = {
+    PlayerOneCriticalHitCombination : true,
+    PlayerTwoCriticalHitCombination : true
+  };
+
   function stage(player1, player2, action1, action2) {
     if (action1 && action1.includes('Attack')) {
       if (action2 && action2.includes('Block')) {
@@ -56,8 +61,14 @@ export async function fight(firstFighter, secondFighter) {
         player2.health -= getDamage(player1, null);
       }
     }
-    else if (action1 && action1.includes('CriticalHitCombination')) {
+    else if (isNoLocked[action1] && action1 && action1.includes('CriticalHitCombination')) {
+      isNoLocked[action1] = false;
       player2.health -= player1.attack * 2;
+      setTimeout(() => {
+        isNoLocked[action1] = true
+      }, 10000);
+    } else if (!isNoLocked[action1] && action1 && action1.includes('CriticalHitCombination')){
+      console.log(`Locked ${action1}`);
     }
   }
 
