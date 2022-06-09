@@ -6,8 +6,6 @@ export async function fight(firstFighter, secondFighter) {
   let leftFighterIndicator = document.querySelector('#left-fighter-indicator');
   let rightFighterIndicator = document.querySelector('#right-fighter-indicator');
 
-  console.log(fFighter, sFighter);
-
   function isKeyIncludes(key, controls, keysSet) {
     return typeof controls[key] === 'object'
         ? controls[key].every(el => keysSet.has(el))
@@ -71,7 +69,6 @@ export async function fight(firstFighter, secondFighter) {
       }
     }
     let number = defender.health > 0 ? 100 * defender.health / startHealth : 0;
-    console.log('percent: ', number);
     indicator.style.width = `${number}%`;
   }
 
@@ -87,8 +84,6 @@ export async function fight(firstFighter, secondFighter) {
       isNoLocked[action1] = false;
       changeDefenderHealth(player1.attack * 2, player2);
       setTimeout(() => isNoLocked[action1] = true, 10000);
-    } else if (!isNoLocked[action1] && action1 && action1.includes('CriticalHitCombination')){
-      console.log(`Locked ${action1}`);
     }
   }
 
@@ -105,12 +100,9 @@ export async function fight(firstFighter, secondFighter) {
       }
 
       let actions = getActions(keysPressed, keysPressed2);
-      console.log(`${actions[0]} vs ${actions[1]}`);
 
-      console.log(fFighter.health, sFighter.health);
       stage(fFighter, sFighter, actions[0], actions[1]);
       stage(sFighter, fFighter, actions[1], actions[0]);
-      console.log(fFighter.health, sFighter.health);
       keysPressed.clear();
       keysPressed2.clear();
 
@@ -129,7 +121,6 @@ export async function fight(firstFighter, secondFighter) {
 export function getDamage(attacker, defender) {
   // return damage
   let damage = getHitPower(attacker) - getBlockPower(defender);
-  console.log('damage: ', damage);
   return damage > 0 ? damage : 0;
 }
 

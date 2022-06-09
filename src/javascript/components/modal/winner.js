@@ -1,5 +1,5 @@
 import {showModal} from "./modal";
-import {createFighterImage} from "../fighterPreview";
+import {createWinnerImage} from "../fighterPreview";
 
 
 export function showWinnerModal(fighter) {
@@ -7,7 +7,8 @@ export function showWinnerModal(fighter) {
 
     let title = `${fighter.name} wins!`;
 
-    let bodyElement = createFighterImage(fighter);
+    let bodyElement = createWinnerImage(fighter);
+
     let onClose = () => location.reload();
     showModal({title, bodyElement, onClose});
 }
