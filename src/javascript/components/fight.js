@@ -1,8 +1,12 @@
 import {controls} from '../../constants/controls';
 
 export async function fight(firstFighter, secondFighter) {
+  let fFighter = (({name, health, attack, defense}) => ({name, health, attack, defense}))(firstFighter);
+  let sFighter = (({name, health, attack, defense}) => ({name, health, attack, defense}))(secondFighter);
+  let leftFighterIndicator = document.querySelector('#left-fighter-indicator');
+  let rightFighterIndicator = document.querySelector('#right-fighter-indicator');
 
-  console.log(firstFighter, secondFighter);
+  console.log(fFighter, sFighter);
 
   function isKeyIncludes(key, controls, keysSet) {
     return typeof controls[key] === 'object'
@@ -53,20 +57,36 @@ export async function fight(firstFighter, secondFighter) {
     PlayerTwoCriticalHitCombination : true
   };
 
+  function changeDefenderHealth(damage, defender) {
+    defender.health -= damage;
+    let startHealth;
+    let indicator;
+    if (defender) {
+      if (defender.name === firstFighter.name) {
+        indicator = leftFighterIndicator;
+        startHealth = firstFighter.health;
+      } else {
+        indicator = rightFighterIndicator;
+        startHealth = secondFighter.health;
+      }
+    }
+    let number = defender.health > 0 ? 100 * defender.health / startHealth : 0;
+    console.log('percent: ', number);
+    indicator.style.width = `${number}%`;
+  }
+
   function stage(player1, player2, action1, action2) {
     if (action1 && action1.includes('Attack')) {
       if (action2 && action2.includes('Block')) {
-        player2.health -= getDamage(player1, player2);
+        changeDefenderHealth(getDamage(player1, player2), player2);
       } else {
-        player2.health -= getDamage(player1, null);
+        changeDefenderHealth(getDamage(player1, null), player2);
       }
     }
     else if (isNoLocked[action1] && action1 && action1.includes('CriticalHitCombination')) {
       isNoLocked[action1] = false;
-      player2.health -= player1.attack * 2;
-      setTimeout(() => {
-        isNoLocked[action1] = true
-      }, 10000);
+      changeDefenderHealth(player1.attack * 2, player2);
+      setTimeout(() => isNoLocked[action1] = true, 10000);
     } else if (!isNoLocked[action1] && action1 && action1.includes('CriticalHitCombination')){
       console.log(`Locked ${action1}`);
     }
@@ -85,19 +105,19 @@ export async function fight(firstFighter, secondFighter) {
       }
 
       let actions = getActions(keysPressed, keysPressed2);
-      console.log(actions[0] + actions[1]);
+      console.log(`${actions[0]} vs ${actions[1]}`);
 
-      console.log(firstFighter.health, secondFighter.health);
-      stage(firstFighter, secondFighter, actions[0], actions[1]);
-      stage(secondFighter, firstFighter, actions[1], actions[0]);
-      console.log(firstFighter.health, secondFighter.health);
+      console.log(fFighter.health, sFighter.health);
+      stage(fFighter, sFighter, actions[0], actions[1]);
+      stage(sFighter, fFighter, actions[1], actions[0]);
+      console.log(fFighter.health, sFighter.health);
       keysPressed.clear();
       keysPressed2.clear();
 
-      if (firstFighter.health <= 0 || secondFighter.health <= 0) {
+      if (fFighter.health <= 0 || sFighter.health <= 0) {
         window.removeEventListener('keydown', keydownHandler);
         window.removeEventListener('keyup', keyupHandler);
-        resolve(firstFighter.health > secondFighter.health ? firstFighter : secondFighter);
+        resolve(fFighter.health > sFighter.health ? fFighter : sFighter);
       }
     };
 
