@@ -76,11 +76,10 @@ export async function fight(firstFighter, secondFighter) {
     // resolve the promise with the winner when fight is over
     const keysPressed = new Set();
     const keysPressed2 = new Set();
-    window.addEventListener('keydown', ev => {
+    let keydownHandler = ev => {
       populateActionSets(ev, keysPressed, keysPressed2);
-    });
-
-    window.addEventListener('keyup', ev => {
+    };
+    let keyupHandler = ev => {
       if (!keysPressed.size && !keysPressed2.size) {
         return;
       }
@@ -96,11 +95,14 @@ export async function fight(firstFighter, secondFighter) {
       keysPressed2.clear();
 
       if (firstFighter.health <= 0 || secondFighter.health <= 0) {
-
-        // showWinnerModal(firstFighter.health > secondFighter.health ? firstFighter : secondFighter);
+        window.removeEventListener('keydown', keydownHandler);
+        window.removeEventListener('keyup', keyupHandler);
         resolve(firstFighter.health > secondFighter.health ? firstFighter : secondFighter);
       }
-    });
+    };
+
+    window.addEventListener('keydown', keydownHandler);
+    window.addEventListener('keyup', keyupHandler);
   });
 }
 
