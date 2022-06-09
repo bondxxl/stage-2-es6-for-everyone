@@ -7,7 +7,45 @@
 .fighter-preview___right {
   align-items: flex-end;
 }
+.fighter-preview___right img {
+  transform: scaleX(-1);
+}
 
 .fighter-preview___left {
   align-items: flex-start;
+}
+
+.fighter-preview___info {
+  height: 100%;
+  width: 100%;
+  text-align: center;
+  background: #ba0303;
+  opacity: .8;
+  box-shadow: 6px 6px 7px 0 rgba(0, 0, 0, 0.75);
+  border: 1px dotted transparent;
+  padding-block: 0;
+  padding-inline: 1px;
+}
+
+.fighter-preview___item {
+  padding: 1px;
+  color: black;
+  -webkit-text-fill-color: white;
+  -webkit-text-stroke-width: 1px;
+  font-size: 22px;
+  font-weight: 700;
+  box-shadow: 6px 6px 7px 0 rgba(0, 0, 0, 0.75);
+}
+
+.fighter-preview___img {
+  height: 360px;
+}
+
+.fighter-preview___img-winner {
+  background: #ba0303;
+  box-shadow: 6px 6px 7px 0 rgba(0, 0, 0, 0.75);
+}
+
+.fighter-preview___title {
+  background: #ba0303;
 }
