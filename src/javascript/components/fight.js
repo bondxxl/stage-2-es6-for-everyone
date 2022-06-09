@@ -117,7 +117,7 @@ export async function fight(firstFighter, secondFighter) {
       if (fFighter.health <= 0 || sFighter.health <= 0) {
         window.removeEventListener('keydown', keydownHandler);
         window.removeEventListener('keyup', keyupHandler);
-        resolve(fFighter.health > sFighter.health ? fFighter : sFighter);
+        resolve(fFighter.health > sFighter.health ? firstFighter : secondFighter);
       }
     };
 
