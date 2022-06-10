@@ -62,9 +62,12 @@ export function createWinnerImage(fighter) {
     title: name,
     alt: name
   };
+  let position = fighter[Object.getOwnPropertySymbols(fighter)[0]];
+  const positionClassName = position === 'right' ? 'fighter-preview___img-winner-right' : '';
+  console.log(positionClassName, fighter);
   const imgElement = createElement({
     tagName: 'img',
-    className: 'fighter-preview___img-winner',
+    className: `fighter-preview___img-winner ${positionClassName}`,
     attributes,
   });
 

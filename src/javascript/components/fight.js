@@ -1,8 +1,10 @@
 import {controls} from '../../constants/controls';
 
 export async function fight(firstFighter, secondFighter) {
-  let fFighter = (({name, health, attack, defense}) => ({name, health, attack, defense}))(firstFighter);
-  let sFighter = (({name, health, attack, defense}) => ({name, health, attack, defense}))(secondFighter);
+  let fFighter = (({health, attack, defense}) => ({health, attack, defense}))(firstFighter);
+  let sFighter = (({health, attack, defense}) => ({health, attack, defense}))(secondFighter);
+  fFighter.id = 1;
+  sFighter.id = 2;
   let leftFighterIndicator = document.querySelector('#left-fighter-indicator');
   let rightFighterIndicator = document.querySelector('#right-fighter-indicator');
 
@@ -60,7 +62,7 @@ export async function fight(firstFighter, secondFighter) {
     let startHealth;
     let indicator;
     if (defender) {
-      if (defender.name === firstFighter.name) {
+      if (defender.id === 1) {
         indicator = leftFighterIndicator;
         startHealth = firstFighter.health;
       } else {
@@ -72,33 +74,16 @@ export async function fight(firstFighter, secondFighter) {
     indicator.style.width = `${number}%`;
   }
 
-/*  function stage(player1, player2, action1, action2) {
-    if (action1 && action1.includes('Attack')) {
-      if (action2 && action2.includes('Block')) {
-        changeDefenderHealth(getDamage(player1, player2), player2);
-      } else {
-        changeDefenderHealth(getDamage(player1, null), player2);
+  function stage(attacker, defender, attackerAction, defenderAction) {
+    if (attackerAction && attackerAction.includes('Attack')) {
+      if (!defenderAction || !defenderAction.includes('Block')) {
+        changeDefenderHealth(getDamage(attacker, defender), defender);
       }
     }
-    else if (isNoLocked[action1] && action1 && action1.includes('CriticalHitCombination')) {
-      isNoLocked[action1] = false;
-      changeDefenderHealth(player1.attack * 2, player2);
-      setTimeout(() => isNoLocked[action1] = true, 10000);
-    }
-  }*/
-  function stage(player1, player2, action1, action2) {
-    if (action1 && action1.includes('Attack')) {
-      if (action2 && action2.includes('Block')) {
-        // changeDefenderHealth(getDamage(player1, player2), player2);
-      } else {
-        // changeDefenderHealth(getDamage(player1, null), player2);
-        changeDefenderHealth(getDamage(player1, player2), player2);
-      }
-    }
-    else if (isNoLocked[action1] && action1 && action1.includes('CriticalHitCombination')) {
-      isNoLocked[action1] = false;
-      changeDefenderHealth(player1.attack * 2, player2);
-      setTimeout(() => isNoLocked[action1] = true, 10000);
+    else if (attackerAction && isNoLocked[attackerAction] && attackerAction.includes('CriticalHitCombination')) {
+      isNoLocked[attackerAction] = false;
+      changeDefenderHealth(attacker.attack * 2, defender);
+      setTimeout(() => isNoLocked[attackerAction] = true, 10000);
     }
   }
 
@@ -124,7 +109,10 @@ export async function fight(firstFighter, secondFighter) {
       if (fFighter.health <= 0 || sFighter.health <= 0) {
         window.removeEventListener('keydown', keydownHandler);
         window.removeEventListener('keyup', keyupHandler);
-        resolve(fFighter.health > sFighter.health ? firstFighter : secondFighter);
+        const position = Symbol();
+        resolve(fFighter.health > sFighter.health
+            ? (firstFighter[position] = 'left', firstFighter)
+            : (secondFighter[position] = 'right', secondFighter));
       }
     };
 
@@ -153,12 +141,6 @@ export function getBlockPower(fighter) {
   let dodgeChance = getRandomFloatInclusive(1, 2);
   return fighter.defense * dodgeChance;
 }
-
-/*function getRandomIntInclusive(min, max) {
-  min = Math.ceil(min);
-  max = Math.floor(max);
-  return Math.floor(Math.random() * (max - min + 1) + min); //The maximum is inclusive and the minimum is inclusive
-}*/
 
 // Generates values from <0, 1>
 function randomizeValue() {
