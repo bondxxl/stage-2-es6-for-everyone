@@ -72,12 +72,27 @@ export async function fight(firstFighter, secondFighter) {
     indicator.style.width = `${number}%`;
   }
 
-  function stage(player1, player2, action1, action2) {
+/*  function stage(player1, player2, action1, action2) {
     if (action1 && action1.includes('Attack')) {
       if (action2 && action2.includes('Block')) {
         changeDefenderHealth(getDamage(player1, player2), player2);
       } else {
         changeDefenderHealth(getDamage(player1, null), player2);
+      }
+    }
+    else if (isNoLocked[action1] && action1 && action1.includes('CriticalHitCombination')) {
+      isNoLocked[action1] = false;
+      changeDefenderHealth(player1.attack * 2, player2);
+      setTimeout(() => isNoLocked[action1] = true, 10000);
+    }
+  }*/
+  function stage(player1, player2, action1, action2) {
+    if (action1 && action1.includes('Attack')) {
+      if (action2 && action2.includes('Block')) {
+        // changeDefenderHealth(getDamage(player1, player2), player2);
+      } else {
+        // changeDefenderHealth(getDamage(player1, null), player2);
+        changeDefenderHealth(getDamage(player1, player2), player2);
       }
     }
     else if (isNoLocked[action1] && action1 && action1.includes('CriticalHitCombination')) {
