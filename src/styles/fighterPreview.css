@@ -46,6 +46,10 @@
   box-shadow: 6px 6px 7px 0 rgba(0, 0, 0, 0.75);
 }
 
+.fighter-preview___img-winner-right {
+  transform: scaleX(-1);
+}
+
 .fighter-preview___title {
   background: #ba0303;
 }
